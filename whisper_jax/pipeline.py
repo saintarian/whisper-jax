@@ -78,6 +78,7 @@ class FlaxWhisperPipline:
                 The maximum numbers of tokens to generate. Defaults to `model.config.max_length`.
         """
         self.checkpoint = checkpoint
+        self.model_checkpoint = model_checkpoint
         self.dtype = dtype
 
         self.processor = WhisperProcessor.from_pretrained(self.checkpoint)
@@ -86,8 +87,8 @@ class FlaxWhisperPipline:
         tokenizer_cls = WhisperTokenizerFast if is_tokenizers_available() else WhisperTokenizer
         self.tokenizer = tokenizer_cls.from_pretrained(checkpoint)
 
-        if model_checkpoint is None:
-            model_checkpoint = checkpoint
+        if self.model_checkpoint is None:
+            self.model_checkpoint = self.checkpoint
 
         self.model, self.params = FlaxWhisperForConditionalGeneration.from_pretrained(
             self.model_checkpoint,
