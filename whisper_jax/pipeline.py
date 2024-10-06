@@ -56,6 +56,7 @@ class FlaxWhisperPipline:
     def __init__(
         self,
         checkpoint="openai/whisper-large-v2",
+        model_checkpoint=None,
         dtype=jnp.float32,
         batch_size=None,
         max_length=None,
@@ -85,8 +86,11 @@ class FlaxWhisperPipline:
         tokenizer_cls = WhisperTokenizerFast if is_tokenizers_available() else WhisperTokenizer
         self.tokenizer = tokenizer_cls.from_pretrained(checkpoint)
 
+        if model_checkpoint is None:
+            model_checkpoint = checkpoint
+
         self.model, self.params = FlaxWhisperForConditionalGeneration.from_pretrained(
-            self.checkpoint,
+            self.model_checkpoint,
             _do_init=False,
             dtype=self.dtype,
         )
